@@ -1,5 +1,6 @@
 import { Box, Button, Card, Headline, Paragraph } from "@parte-ds/ui";
 import { Em, Img } from "./styles";
+import { formatToWon } from "../../utils/string.util";
 
 type ProductItemProps = {
   product: Product;
@@ -8,6 +9,7 @@ type ProductItemProps = {
 
 const ProductItem = ({ product, onClick }: ProductItemProps) => {
   const { category, name, price, imgUrl } = product;
+  const priceToWon = formatToWon(price);
   return (
     <Card padding={16} display="flex" flexDirection="column" gap={8}>
       <Img src={imgUrl} width="200" height="200" alt="item" />
@@ -16,7 +18,7 @@ const ProductItem = ({ product, onClick }: ProductItemProps) => {
           <Em>[{category[0]}]</Em>
           <span className="menu-name">{name}</span>
         </Headline>
-        <Paragraph size={200}>가격: {price.toLocaleString()}원</Paragraph>
+        <Paragraph size={200}>가격: {priceToWon}</Paragraph>
       </Box>
       <Box marginTop={8}>
         <Button type="button" fullWidth onClick={() => onClick?.(product)}>
