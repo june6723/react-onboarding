@@ -4,6 +4,11 @@ import App from "./App.tsx";
 import { ThemeProvider } from "@parte-ds/ui";
 import { GlobalStyle } from "./GlobalStyles.tsx";
 import { BrowserRouter } from "react-router-dom";
+import { worker } from "./mock/worker";
+console.log(import.meta.env.MODE);
+if (import.meta.env.MODE === "development") {
+  worker.start();
+}
 
 ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
   <React.StrictMode>
