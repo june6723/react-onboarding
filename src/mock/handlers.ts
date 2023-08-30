@@ -11,6 +11,7 @@ import 라즈베리_쇼콜라 from "../../assets/image/bread/라즈베리_쇼콜
 import 클래식_스콘 from "../../assets/image/bread/클래식_스콘.jpeg";
 import 티라미수_크림_데니쉬 from "../../assets/image/bread/티라미수_크림_데니쉬.jpeg";
 import { rest } from "msw";
+import Chance from "chance";
 
 const coffees = [
   { id: 1, category: "COFFEE", name: "나이트로 바닐라 크림", price: 5900, imgUrl: 나이트로_바닐라_크림 },
@@ -29,29 +30,60 @@ const desserts = [
   { id: 12, category: "DESSERT", name: "티라미수 크림 데니쉬", price: 5800, imgUrl: 티라미수_크림_데니쉬 },
 ];
 
-const delay = () =>
-  new Promise((resolve) => {
+const SERVER_ERROR = "Server Error";
+const IN_MAINTENANCE = "In maintenance";
+
+const chance = new Chance();
+const randomNumber = () => chance.integer({ min: 1, max: 100 });
+const probability = () => {
+  return new Promise<boolean>((resolve, reject) => {
     setTimeout(() => {
-      resolve(true);
+      const random = randomNumber();
+      if (random <= 10) {
+        reject(new Error(IN_MAINTENANCE));
+        return;
+      }
+      if (random <= 30) {
+        reject(new Error(SERVER_ERROR));
+        return;
+      } else if (random <= 50) {
+        resolve(false); // empty 일경우
+        return;
+      }
+      resolve(true); // 성공했을 경우
     }, 500);
   });
+};
+
+const isError = (error: unknown): error is Error => {
+  if (error !== null && typeof error === "object") {
+    return Object.prototype.hasOwnProperty.call(error, "message");
+  }
+  return false;
+};
 
 export const handlers = [
   // 커피 목록
   rest.get("/api/coffees", async (req, res, ctx) => {
     try {
-      await delay();
+      const result = await probability();
       return res(ctx.status(200), ctx.json(coffees));
     } catch (error) {
+      if (isError(error) && error.message === IN_MAINTENANCE) {
+        return res(ctx.status(503, IN_MAINTENANCE));
+      }
       return res(ctx.status(500));
     }
   }),
   // 디저트 목록
   rest.get("/api/desserts", async (req, res, ctx) => {
     try {
-      await delay();
+      const result = await probability();
       return res(ctx.status(200), ctx.json(desserts));
     } catch (error) {
+      if (isError(error) && error.message === IN_MAINTENANCE) {
+        return res(ctx.status(503, IN_MAINTENANCE));
+      }
       return res(ctx.status(500));
     }
   }),

@@ -51,12 +51,7 @@ const Bills = () => {
       {!freeShipping && (
         <>
           <Paragraph size={200}>배송비: {formatToWon(shippingFee)}</Paragraph>
-          <Alert
-            type="alert-inline"
-            status="info"
-            title="팁"
-            message={`${formatToWon(freeShippingPrice - totalPrice)}만큼 더 주문하시면 배송비가 무료입니다.`}
-          />
+          <Alert type="inline" status="info" message={`${formatToWon(freeShippingPrice - totalPrice)}만큼 더 주문하시면 배송비가 무료입니다.`} />
         </>
       )}
       <Paragraph size={200}>총합: {formatToWon(finalPrice)}</Paragraph>

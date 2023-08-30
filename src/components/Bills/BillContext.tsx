@@ -1,5 +1,5 @@
-import { PropsWithChildren, Reducer, createContext, useEffect, useReducer } from "react";
 import { produce } from "immer";
+import { PropsWithChildren, Reducer, createContext, useReducer } from "react";
 
 type BillState = {
   products: SelectedProduct[];
@@ -42,9 +42,6 @@ export const BillContext = createContext<[BillState, React.Dispatch<BillAction>]
 
 export const BillContextProvider = ({ children }: PropsWithChildren) => {
   const stateAndDispatch = useReducer(billReducer, { products: [] });
-  useEffect(() => {
-    const [{ products }] = stateAndDispatch;
-    console.log(products);
-  }, [stateAndDispatch]);
+
   return <BillContext.Provider value={stateAndDispatch}>{children}</BillContext.Provider>;
 };
